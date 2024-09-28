@@ -38,3 +38,6 @@ if __name__ == "__main__":
     root.geometry("900x600")
     root.resizable(False, False)
     root.mainloop()
+
+
+# ФИЗУЛИ ЧМО
