@@ -1,6 +1,11 @@
-import tkmacosx as tkx
 import tkinter as tk 
 import platform
+
+class Movement():
+    def __init__(self, figure):
+        self.possible_moves = []
+        self.figure = figure
+        
 
 class Main():
     def __init__(self, root):  
@@ -12,8 +17,8 @@ class Main():
         self.pressed_btn = None
         self.pressed_btn_text = ""
         self.pressed_btn_pos = []
+        self.pressed_btn_bg = ""
         self.isPressed = False
-
         self.init_main(root)
 
     def move(self, cell_name):
@@ -24,18 +29,17 @@ class Main():
                 self.pressed_btn.config(bg=self.color[(self.pressed_btn_pos[0] + self.pressed_btn_pos[1]) % 2])
              
             self.pressed_btn = current_btn
+            self.pressed_btn_bg = current_btn.cget("bg")
             self.pressed_btn.config(bg="orange")
             self.pressed_btn_text = current_btn.cget("text")
             self.pressed_btn_pos = [cell_name[0], cell_name[1]]
             self.isPressed = True
 
         elif self.isPressed and current_btn.cget("text") == "":
-            current_btn.config(bg=self.color[(cell_name[0] + cell_name[1]) % 2])
-            self.pressed_btn.config(text="", bg=self.color[(self.pressed_btn_pos[0] + self.pressed_btn_pos[1]) % 2]) 
+            self.pressed_btn.config(text="", bg=self.pressed_btn_bg) 
             current_btn.config(text=self.pressed_btn_text)
             self.isPressed = False
 
-        
 
     def init_main(self, root):
         self.frame = tk.LabelFrame(root)
@@ -52,11 +56,8 @@ class Main():
                 else: 
                     text = ""
                 if platform.system() == "Darwin":
-                    self.btn_cell = tkx.Button(self.frame)
-                else:
-                    self.btn_cell = tk.Button(self.frame)
-                    
-                self.btn_cell.config(self.frame, text=text,
+                    from tkmacosx import Button
+                    self.btn_cell = Button(self.frame, text=text,
                                      width=button_size, height=button_size, bd=0, 
                                      bg=self.color[(i + j) % 2], 
                                      fg="black",#self.color[(i + j + 1) % 2],
@@ -64,12 +65,21 @@ class Main():
                                      activeforeground="black",#self.color[(i + j + 1) % 2],
                                      font=("Helvetica", "100", "bold"), padx=5, pady=5, 
                                      command=lambda cell_name=[i, j]: self.move(cell_name))
+                else:
+                    self.btn_cell = tk.Button(self.frame, text=text,
+                                     width=button_size, height=button_size, bd=0, 
+                                     bg=self.color[(i + j) % 2], 
+                                     fg="black",#self.color[(i + j + 1) % 2],
+                                     activebackground=self.color[(i + j) % 2], 
+                                     activeforeground="black",#self.color[(i + j + 1) % 2],
+                                     font=("Helvetica", "70"), padx=5, pady=5, 
+                                     command=lambda cell_name=[i, j]: self.move(cell_name))
+                    
 
                 self.btn_cell.grid(row=i, column=j, sticky='nsew') 
                 self.cells_board[i][j] = self.btn_cell
 
-
-        for i in range(8):
+        for i in range(0, 8):
             self.frame.grid_rowconfigure(i, weight=1)
             self.frame.grid_columnconfigure(i, weight=1)
 
@@ -80,4 +90,3 @@ if __name__ == "__main__":
     root.geometry("700x700")
     root.resizable(False, False)
     root.mainloop()
-
