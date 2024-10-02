@@ -169,6 +169,7 @@ class Main():
         self.pressed_btn_text = ""
         self.pressed_btn_pos = []
         self.pressed_btn_bg = ""
+        self.pressed_btn_fg = ""
         self.isPressed = False
         self.black_king = [7, 3]
         self.white_king = [0, 3]
@@ -186,14 +187,22 @@ class Main():
             self.pressed_btn.config(bg="orange")
             self.pressed_btn_text = current_btn.cget("text")
             self.pressed_btn_pos = [cell_name[0], cell_name[1]]
+            self.pressed_btn_fg = current_btn.cget("fg")
             Movement.find_possible_move(self, cell_name, self.pressed_btn_text, self.turn_color)
             print(self.possible_moves)
             self.isPressed = True
             return
             
-        if current_btn == self.pressed_btn:
-            self.isPressed = False
-            current_btn.config(bg = self.pressed_btn_bg)
+        if current_btn.cget("fg") == self.pressed_btn_fg and current_btn.cget("fg") == self.turn_color:
+            self.pressed_btn.config(bg = self.pressed_btn_bg)
+            self.pressed_btn = current_btn
+            self.pressed_btn_bg = current_btn.cget("bg")
+            self.pressed_btn.config(bg="orange")
+            self.pressed_btn_text = current_btn.cget("text")
+            self.pressed_btn_pos = [cell_name[0], cell_name[1]]
+            Movement.find_possible_move(self, cell_name, self.pressed_btn_text, self.turn_color)
+            print(self.possible_moves)
+            self.isPressed = True
             return
 
         elif self.isPressed and (current_btn.cget("text") == "" or current_btn.cget("fg") != self.turn_color):
