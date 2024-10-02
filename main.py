@@ -42,104 +42,116 @@ class Movement():
             self.possible_moves.append([x-1, y+1])
                     
         if self.figure == "♕":
+
             for i in range(1, 8):
-                if self.board[x][y-i] != "" or y-i == 0:
+                if y-i <= 0 or self.board[x][y-i] != "":
                         self.possible_moves.append([x, y-i])
                         break
                 self.possible_moves.append([x, y-i])
                 
             for i in range(1, 8):
-                if self.board[x][y+i] != "" or y+i == 7:
+                if y+i >= 7 or self.board[x][y+i] != "":
                         self.possible_moves.append([x, y+i])
                         break
                 self.possible_moves.append([x, y+i])
             
             for i in range(1, 8):
-                if self.board[x-i][y] != "" or x-i == 0:
+                if x-i <= 0 or self.board[x-i][y] != "":
                         self.possible_moves.append([x-i, y])
                         break
                 self.possible_moves.append([x-i, y])
             
             for i in range(1, 8):
-                if self.board[x+i][y] != "" or x+i == 7:
+                if x+i >= 7 or self.board[x+i][y] != "":
                         self.possible_moves.append([x+i, y])
                         break
                 self.possible_moves.append([x+i, y])
                 
             for i in range(1, 8):
-                if self.board[x-i][y+i] != "" or x-i == 0 or y+i==7 or x == 0:
+                if x-i == 0 or y+i >= 7 or x == 0 or self.board[x-i][y+i] != "":
                         self.possible_moves.append([x-i, y+i])
                         break
                 self.possible_moves.append([x-i, y+i])
                 
             for i in range(1, 8):
-                if self.board[x-i][y-i] != "" or x-i == 0 or y-i==0 or x == 0:
+                if x-i <= 0 or y-i <= 0 or self.board[x-i][y-i] != "":
                         self.possible_moves.append([x-i, y-i])
                         break
                 self.possible_moves.append([x-i, y-i])
             
             for i in range(1, 8):
-                if self.board[x+i][y+i] != "" or x+i == 7 or y+i==7:
+                if x+i >= 7 or y+i >= 7 or self.board[x+i][y+i] != "":
                         self.possible_moves.append([x+i, y+i])
                         break
                 self.possible_moves.append([x+i, y+i])
                 
             for i in range(1, 8):
-                if self.board[x+i][y-i] != "" or x+i == 7 or y-i==0 or y == 0:
+                if x+i >= 7 or y-i<=0 or self.board[x+i][y-i] != "":
                         self.possible_moves.append([x+i, y-i])
                         break
                 self.possible_moves.append([x+i, y-i])
-                
+
+        
         if self.figure == "♖":
             for i in range(1, 8):
-                if self.board[x][y-i] != "" or y-i == 0 or y == 0:
+                if y-i <= 0 or self.board[x][y-i] != "":
                         self.possible_moves.append([x, y-i])
                         break
                 self.possible_moves.append([x, y-i])
                 
             for i in range(1, 8):
-                if self.board[x][y+i] != "" or y+i == 7:
+                if y+i >= 7 or self.board[x][y+i] != "":
                         self.possible_moves.append([x, y+i])
                         break
                 self.possible_moves.append([x, y+i])
             
             for i in range(1, 8):
-                if self.board[x-i][y] != "" or x-i == 0 or x == 0:
+                if x-i <= 0 or self.board[x-i][y] != "":
                         self.possible_moves.append([x-i, y])
                         break
                 self.possible_moves.append([x-i, y])
             
             for i in range(1, 8):
-                if self.board[x+i][y] != "" or x+i == 7:
+                if x+i >= 7 or self.board[x+i][y] != "":
                         self.possible_moves.append([x+i, y])
                         break
                 self.possible_moves.append([x+i, y])
         
         if self.figure == "♗":
             for i in range(1, 8):
-                if self.board[x-i][y+i] != "" or x-i == 0 or y+i==7 or x == 0:
+                if x-i <= 0 or y+i>=7 or self.board[x-i][y+i] != "":
                         self.possible_moves.append([x-i, y+i])
                         break
                 self.possible_moves.append([x-i, y+i])
                 
             for i in range(1, 8):
-                if self.board[x-i][y-i] != "" or x-i == 0 or y-i==0 or x == 0:
+                if x-i <= 0 or y-i<=0 or self.board[x-i][y-i] != "":
                         self.possible_moves.append([x-i, y-i])
                         break
                 self.possible_moves.append([x-i, y-i])
             
             for i in range(1, 8):
-                if self.board[x+i][y+i] != "" or x+i == 7 or y+i==7:
+                if x+i >= 7 or y+i>=7 or self.board[x+i][y+i] != "":
                         self.possible_moves.append([x+i, y+i])
                         break
                 self.possible_moves.append([x+i, y+i])
                 
             for i in range(1, 8):
-                if self.board[x+i][y-i] != "" or x+i == 7 or y-i==0 or y == 0:
+                if x+i >= 7 or y-i<=0 or self.board[x+i][y-i] != "":
                         self.possible_moves.append([x+i, y-i])
                         break
                 self.possible_moves.append([x+i, y-i])
-                
+        
+        if figure == "♘":
+            self.possible_moves.append([x+2, y+1])
+            self.possible_moves.append([x+2, y-1])
+            self.possible_moves.append([x+1, y+2])
+            self.possible_moves.append([x+1, y-2])
+            self.possible_moves.append([x-2, y-1])
+            self.possible_moves.append([x-2, y+1])
+            self.possible_moves.append([x-1, y-2])
+            self.possible_moves.append([x-1, y+2])
+
                     
 class Main():
     def __init__(self, root):  
