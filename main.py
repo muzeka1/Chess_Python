@@ -4,6 +4,7 @@ import platform
 class Movement():
     def __init__(self):
         self.figure = ""
+        self.chah = []
     
     def find_possible_move(self, coords, figure, color):
         self.possible_moves = []
@@ -15,20 +16,20 @@ class Movement():
             if color == "white":
                 if x == 1 and self.board[x+2][y] == "":
                     self.possible_moves.append([x+2, y])
-                if x+1 < 8 and self.board[x+1][y] == "":
+                if x+1 <= 7 and self.board[x+1][y] == "":
                     self.possible_moves.append([x+1, y])
-                if self.board[x+1][y-1] != "" and self.cells_board[x+1][y-1].cget("fg") != color:
+                if x+1 <= 7 and y-1 >= 0 and self.board[x+1][y-1] != "" and self.cells_board[x+1][y-1].cget("fg") != color:
                     self.possible_moves.append([x+1,y-1])
-                if self.board[x+1][y+1] != "" and self.cells_board[x+1][y+1].cget("fg") != color:
+                if x+1 <= 7 and y+1 <= 7 and self.board[x+1][y+1] != "" and self.cells_board[x+1][y+1].cget("fg") != color:
                     self.possible_moves.append([x+1,y+1])
             if color == "black":
                 if x == 6 and self.board[x-2][y] == "":
                     self.possible_moves.append([x-2, y])
                 if x-1 >= 0 and self.board[x-1][y] == "":
                     self.possible_moves.append([x-1, y])
-                if self.board[x-1][y-1] != "" and self.cells_board[x-1][y-1].cget("fg") != color:
+                if x-1 >= 0 and y-1 >= 0 and self.board[x-1][y-1] != "" and self.cells_board[x-1][y-1].cget("fg") != color:
                     self.possible_moves.append([x-1,y-1])
-                if self.board[x-1][y+1] != "" and self.cells_board[x-1][y+1].cget("fg") != color:
+                if x-1 >= 0 and y+1 <= 7 and self.board[x-1][y+1] != "" and self.cells_board[x-1][y+1].cget("fg") != color:
                     self.possible_moves.append([x-1,y+1])
                     
         if self.figure == "♔" :
@@ -42,7 +43,6 @@ class Movement():
             self.possible_moves.append([x-1, y+1])
                     
         if self.figure == "♕":
-
             for i in range(1, 8):
                 if y-i <= 0 or self.board[x][y-i] != "":
                         self.possible_moves.append([x, y-i])
@@ -151,13 +151,15 @@ class Movement():
             self.possible_moves.append([x-2, y+1])
             self.possible_moves.append([x-1, y-2])
             self.possible_moves.append([x-1, y+2])
+        #for i in range(0, len(possible_moves)):
+
 
                     
 class Main():
     def __init__(self, root):  
         self.main_figures = ["♖", "♘", "♗", "♔", 
                              "♕", "♗", "♘", "♖"]
-        self.color = ["#FAEBD7", "#6B8E23"]
+        self.color = ["#FFEBCD", "#6B8E23"]#FAEBD7
         self.turn = 0
         self.figure_color = ["white", "black"]
         self.turn_color = "white"
@@ -168,6 +170,9 @@ class Main():
         self.pressed_btn_pos = []
         self.pressed_btn_bg = ""
         self.isPressed = False
+        self.black_king = [7, 3]
+        self.white_king = [0, 3]
+
         self.init_main(root)
 
     def move(self, cell_name):
