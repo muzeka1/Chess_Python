@@ -193,7 +193,8 @@ class Main():
             self.isPressed = True
             return
             
-        if current_btn.cget("fg") == self.pressed_btn_fg and current_btn.cget("fg") == self.turn_color:
+        if current_btn.cget("fg") == self.pressed_btn_fg and current_btn.cget("fg") == self.turn_color and current_btn.cget("text") != "":
+            print("ПОМЕНЯЛИ ФИГУРУ")
             self.pressed_btn.config(bg = self.pressed_btn_bg)
             self.pressed_btn = current_btn
             self.pressed_btn_bg = current_btn.cget("bg")
@@ -205,7 +206,8 @@ class Main():
             self.isPressed = True
             return
 
-        elif self.isPressed and (current_btn.cget("text") == "" or current_btn.cget("fg") != self.turn_color):
+        if self.isPressed and (current_btn.cget("text") == "" or current_btn.cget("fg") != self.turn_color):
+            print("ПОСТАВИЛИ ФИГУРУ", self.turn_color)
             if cell_name in self.possible_moves:
                 self.pressed_btn.config(text="", bg=self.pressed_btn_bg) 
                 self.board[self.pressed_btn_pos[0]][self.pressed_btn_pos[1]] = ""
@@ -214,9 +216,11 @@ class Main():
                 self.turn += 1
                 self.turn_color = self.figure_color[self.turn % 2]
                 self.isPressed = False
+
+            print(self.turn_color)
                 
-            for i in range(0, 8):
-                print(self.board[i])
+            #for i in range(0, 8):
+             #   print(self.board[i])
             return
         
         
