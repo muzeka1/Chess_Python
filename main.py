@@ -1,5 +1,6 @@
 import tkinter as tk 
 import platform
+from PIL import Image, ImageTk
 
 board = [["" for _ in range(8)] for _ in range(8)]
 cells_board = [["" for _ in range(8)] for _ in range(8)]
@@ -219,4 +220,7 @@ if __name__ == "__main__":
     root.title("Chess")
     root.geometry("700x700")
     root.resizable(False, False)
+    ico = Image.open('icon.png')
+    photo = ImageTk.PhotoImage(ico)
+    root.wm_iconphoto(False, photo)
     root.mainloop()
