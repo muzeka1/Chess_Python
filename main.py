@@ -12,6 +12,8 @@ class Movement():
         self.color = color 
         self.possible_moves = possible_moves
         self.flag = flag
+        
+    
 
     def all_cycle_directions(self, directions, x, y):
         for dx, dy in directions:
@@ -28,7 +30,6 @@ class Movement():
     def find_possible_move(self):
         x,y = self.coords[0], self.coords[1]
 
-        #print("корды текущей фигуры: ", x, y)
         if self.figure == "♟":
             if self.color == "white":
                 if x == 1 and board[x+2][y] == "":
@@ -49,7 +50,7 @@ class Movement():
                 if x-1 >= 0 and y+1 <= 7 and ((board[x-1][y+1] != "" and cells_board[x-1][y+1].cget("fg") != self.color) or self.flag == True):
                     self.possible_moves.append([x-1,y+1])
                     
-        if self.figure == "♚" :
+        if self.figure == "♚":
             directions = [(-1, -1), (1, 1), (0, 1), (0, -1), 
                           (1, 0), (-1, 0), (1, -1), (-1, 1)]
             for direct in directions:
@@ -92,7 +93,7 @@ class Main():
         self.figure_color = ["white", "black"]
         self.turn_color = "white"
         self.possible_moves_figure = []
-        
+        self.cells_on_attack = []
         self.pressed_btn = None
         self.pressed_btn_text = ""
         self.pressed_btn_pos = []
@@ -101,12 +102,20 @@ class Main():
         self.isPressed = False
         self.black_king = [7, 3]
         self.white_king = [0, 3]
+        self.shah = False
 
         self.init_main(root)
+        
+    def find_all_moves(self, turn_color):
+        for i in range(1, 8):
+            for j in range(1, 8):
+                if board[i][j] != "" and board[i][j] != "♚" and turn_color == cells_board[i][j].cget("fg"):
+                    object_class_movement = Movement([i, j], board[i][j], turn_color, self.possible_moves_figure, True)
+                    object_class_movement.find_possible_move()
                     
     def move(self, cell_cords):
         current_btn = cells_board[cell_cords[0]][cell_cords[1]]
-        
+    
         if not self.isPressed and current_btn.cget("text") != "" and current_btn.cget("fg") == self.turn_color:
             print("ВЫБРАЛИ ФИГУРУ")
             if self.pressed_btn:
@@ -117,10 +126,9 @@ class Main():
             self.pressed_btn_text = current_btn.cget("text")
             self.pressed_btn_pos = [cell_cords[0], cell_cords[1]]
             self.pressed_btn_fg = current_btn.cget("fg")
-
             object_class_movement = Movement(cell_cords, self.pressed_btn_text, self.turn_color, self.possible_moves_figure, False)
             object_class_movement.find_possible_move()
-            
+            print(self.possible_moves_figure)
             self.isPressed = True
             return
 
@@ -132,17 +140,18 @@ class Main():
             self.pressed_btn.config(bg="orange")
             self.pressed_btn_text = current_btn.cget("text")
             self.pressed_btn_pos = [cell_cords[0], cell_cords[1]]
-
+            self.possible_moves_figure = []
+            
             object_class_movement = Movement(cell_cords, self.pressed_btn_text, self.turn_color, self.possible_moves_figure, False)
             object_class_movement.find_possible_move()
-         
+            print(self.possible_moves_figure)
             self.isPressed = True
             return
 
         if self.isPressed and (current_btn.cget("text") == "" or current_btn.cget("fg") != self.turn_color):
-            if cell_cords in self.possible_moves_figure:
+            if cell_cords in self.possible_moves_figure and (cell_cords in self.cells_on_attack or self.cells_on_attack == []):
                 print("ПОСТАВИЛИ ФИГУРУ", self.turn_color)
-                print(self.possible_moves_figure)
+                
                 self.pressed_btn.config(text="", bg=self.pressed_btn_bg) 
                 board[self.pressed_btn_pos[0]][self.pressed_btn_pos[1]] = ""
                 board[cell_cords[0]][cell_cords[1]] = self.pressed_btn_text
@@ -155,13 +164,99 @@ class Main():
                     if self.turn_color == "white":
                         self.white_king = cell_cords
 
-                self.turn += 1
-                self.turn_color = self.figure_color[self.turn % 2]
                 self.isPressed = False
                 self.possible_moves_figure = []
-
-                #for i in range(0, len(board)):
-                #    print(board[i])
+                
+                object_class_movement = Movement(cell_cords, self.pressed_btn_text, self.turn_color, self.possible_moves_figure, True)
+                object_class_movement.find_possible_move()
+                print(self.pressed_btn_text)
+                
+                self.shah = False
+                self.cells_on_attack = []
+                
+                if self.turn_color == "white":
+                    if self.black_king in self.possible_moves_figure:
+                        x = self.black_king[0] - cell_cords[0]
+                        y = self.black_king[1] - cell_cords[1]
+                        if x > 0 and y > 0:
+                            for i in range(0, x):
+                                self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]+i])
+                        if x > 0 and y < 0:
+                            for i in range(0, x):
+                                self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]-i])
+                        if x < 0 and y > 0:
+                            for i in range(0, abs(x)):
+                                self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]+i])
+                        if x < 0 and y < 0:
+                            for i in range(0, abs(x)):
+                                self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]-i])
+                        if x == 0:
+                            if y > 0:
+                                for i in range(0, y):
+                                    self.cells_on_attack.append([cell_cords[0], cell_cords[1]+i])
+                            else:
+                                for i in range(0, abs(y)):
+                                    self.cells_on_attack.append([cell_cords[0], cell_cords[1]-i])
+                        if y == 0:
+                            if x > 0:
+                                for i in range(0, x):
+                                    self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]])
+                            else:
+                                for i in range(0, abs(x)):
+                                    self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]])
+                        
+                        self.shah = True
+                        print('БЕЛЫЕ ПОСТАВИЛИ ШАХ', self.cells_on_attack)
+                else:
+                    if self.white_king in self.possible_moves_figure:
+                        x = self.white_king[0] - cell_cords[0]
+                        y = self.white_king[1] - cell_cords[1]
+                        if x > 0 and y > 0:
+                            for i in range(0, x):
+                                self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]+i])
+                        if x > 0 and y < 0:
+                            for i in range(0, x):
+                                self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]-i])
+                        if x < 0 and y > 0:
+                            for i in range(0, abs(x)):
+                                self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]+i])
+                        if x < 0 and y < 0:
+                            for i in range(0, abs(x)):
+                                self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]-i])
+                        if x == 0:
+                            if y > 0:
+                                for i in range(0, y):
+                                    self.cells_on_attack.append([cell_cords[0], cell_cords[1]+i])
+                            else:
+                                for i in range(0, abs(y)):
+                                    self.cells_on_attack.append([cell_cords[0], cell_cords[1]-i])
+                        if y == 0:
+                            if x > 0:
+                                for i in range(0, x):
+                                    self.cells_on_attack.append([cell_cords[0]+i, cell_cords[1]])
+                            else:
+                                for i in range(0, abs(x)):
+                                    self.cells_on_attack.append([cell_cords[0]-i, cell_cords[1]])
+                        self.shah = True
+                        print('ЧЕРНЫЕ ПОСТАВИЛИ ШАХ', self.cells_on_attack)
+                    
+                if self.shah:
+                    self.possible_moves_figure = []
+                    self.find_all_moves(self.figure_color[(self.turn + 1) % 2])
+                    print(self.possible_moves_figure)
+                    for i in self.cells_on_attack:
+                        if i in self.possible_moves_figure:
+                            print('есть кем закрыть')
+                            self.shah = False
+                            break
+                
+                if self.shah:
+                    print('мээээ')
+                
+                self.possible_moves_figure = []
+                self.turn += 1
+                self.turn_color = self.figure_color[self.turn % 2]
+                
             return
 
 
