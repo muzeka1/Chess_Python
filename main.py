@@ -1,7 +1,7 @@
 import tkinter as tk 
 import platform
 from PIL import Image, ImageTk
-
+#for Isa
 board = [["" for _ in range(8)] for _ in range(8)]
 cells_board = [["" for _ in range(8)] for _ in range(8)]
 
